@@ -3,16 +3,17 @@ from albero_di_decisione import *
 import time
 from decimal import *
 import matplotlib.pyplot as plt
+from timeit import default_timer as timer
 
 
-ctx = localcontext()
-ctx.rounding = ROUND_DOWN
+# ctx = localcontext()
+# ctx.rounding = ROUND_DOWN
 
 
 def validation_set(dataset, attributi, target, percentuale,pruning):
     #SCRIVERE L'ALG DI APPRENDIMENTO ALBERI CON E SENZA PRUNING
     #A SECONDA DEL VALORE CHE PASSERO' PER PARAMETRO
-    if pruning == False :
+    if pruning == 0 :
         print "SENZA PRUNING"
     else:
         print "CON PRUNING"
@@ -37,7 +38,7 @@ def validation_set(dataset, attributi, target, percentuale,pruning):
     validationSet = []
     tmp = []
 
-    # I seguenti cicli permettono di non avere mai train e test uguali
+    # I seguenti cicli permettono di dividere trainset e testset in base a una percentuale
     for i in range(0, numeroEsempi):
         tmp.append(trainSet.pop(0))
     print "##############"
@@ -50,11 +51,11 @@ def validation_set(dataset, attributi, target, percentuale,pruning):
     trainSet.extend(tmp)
     print "Lunghezza TRAIN:"+str(len(trainSet))
     print "##############    TRAIN"
-    print trainSet
+    #print trainSet
     print "##############    FINE TRAIN"
     print "LUNGHEZZA VALIDATION SET:"+str(len(validationSet))
     print "##############    TEST"
-    print validationSet
+    #print validationSet
     print "##############    FINE TEST"
     # Si crea l'albero di decisione usando il trainset
     albero = creaAlberoDecisione(trainSet, attributi, target, None, pruning)
@@ -69,8 +70,8 @@ def validation_set(dataset, attributi, target, percentuale,pruning):
     print
     sys.stdout.write("FINE VALIDATION SET")
     sys.stdout.flush()
-
     print
+    #ritorna l'accuratezza
     return Decimal(score).quantize(Decimal('0.00001'))
 
 
@@ -92,11 +93,11 @@ def getValoreTarget(albero, riga):
 
 
 def mainFunction():
-    dataSets = ["carClassifier.csv","uci-20070111-page-blocks.csv","australian.csv"]
-    posizione_target = [5,1,14]
+    dataSets = ["australian.csv"]
+    posizione_target = [11]
+    #dataSets = ["carClassifier.csv","uci-20070111-page-blocks.csv","australian.csv"]
+    #posizione_target = [5,1,14]
 
-    #dataSets = ["australian.csv"]
-    #posizione_target = [11]
     for i in range(0, dataSets.__len__()) :
         dataset, attributi, target = importa_dataset_csv(dataSets[i], posizione_target[i])
 
@@ -111,21 +112,43 @@ def mainFunction():
         print "------------"
         print "------------" 
         '''
-
-        entropia = []
+        start = timer()
+        end = timer()
+        print (end - start)
+        accuratezza = []
+        accuratezza_pruning = []
+        tempo = []
+        tempo_pruning = []
+        percentuali = [0.7]
         percentuali = [0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95]
-        #percentuali = [0.7]
         for i in range(0,len(percentuali)) :
-            tmp = validation_set(dataset, attributi, target, percentuali[i],0)#false sta per pruning si o no
-            entropia.append(tmp)
+            start = timer()
+            tmp = validation_set(dataset, attributi, target, percentuali[i], 0)  # 0 sta per senza pruning
+            end = timer()
+            tempo.append(Decimal(end - start).quantize(Decimal('0.0001')))
+            start = timer()
+            tmp_pruning = validation_set(dataset, attributi, target, percentuali[i],1)   #1 sta per pruning
+            end = timer()
+            tempo_pruning.append(Decimal(end - start).quantize(Decimal('0.0001')))
+            accuratezza.append(tmp)
+            accuratezza_pruning.append(tmp_pruning)
             #70 trainset e 30 testset
-        print "valore correttezza:" + str(entropia)
-
-        plt.plot(percentuali, entropia)
+        print "valore accuratezza :" + str(accuratezza)
+        print "valore accuratezza pruning:" + str(accuratezza_pruning)
+        plt.plot(percentuali, accuratezza)
         plt.title("Curva di apprendimento")
         plt.xlabel("Percentuali apprendimento test set")
         plt.ylabel("Accuratezza su validation set")
-        plt.show()
+        #plt.show()
+        plt.plot(percentuali, accuratezza_pruning)
+        plt.title("Curva di apprendimento CON PRUNING")
+        plt.xlabel("Percentuali apprendimento test set")
+        plt.ylabel("Accuratezza su validation set")
+        #plt.show()
+
+        print "tempo validation set senza pruning in base alle percentuali di train e test :" + str(tempo)
+        print "tempo validation set con pruning in base alle percentuali di train e test :" + str(tempo_pruning)
+        print "percentuali di apprendimento :" + str(percentuali)
 
 
 if __name__ == "__main__":
