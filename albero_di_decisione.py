@@ -41,17 +41,54 @@ def creaAlberoDecisione(dataset, attributi, target, parentDataset, pruning):
 
         return albero
     else:
-        print "DA IMPLEMENTARE IL PRUNING"
+        ###MANCA IMPLEMENTAZIONEEEEEE
+        valori = [i[target] for i in dataset]
 
-def pluralityValue(data, target):
+        # EVENTUALMENTE TOGLIERE QUESTA PARTE DEL PLURALITY !!!!!!!!
+        # Se il dataset e' vuoto o non ci sono attributi oltre a quello target si ritorna il valore di target
+        # ripetuto piu' volte
+        if not dataset:
+            return pluralityValue(parentDataset, target)
+        elif (len(attributi) - 1) <= 0:
+            return pluralityValue(dataset, target)
+        # EVENTUALMENTE TOGLIERE QUESTA PARTE DEL PLURALITY !!!!!!!!
+
+        # Se il valore di target sono tutti uguali non ce' bisogno di continuare la produzione di sottoalberi
+        # e si ritorna il primo valore della lista valori
+        elif valori.count(valori[0]) == len(valori):
+            return valori[0]
+
+        # Se non siamo nei casi precedenti si effettua la ricerca del miglior attributo con importance
+        # e si crea un sotto albero per ogni valore di bestAttributo
+        else:
+            #PER FARE IL PRUNING DEVO VEDERE QUANTO SI RAMIFICA L'ALBERO E POTARE
+            #SECONDO UNA PROFONDITA' DELL'ALBERO PREDEFINITA OPPURE SECONDO UN
+            #FATTORE DI RAMIFICAZIONE
+            bestAttributo = importanza(dataset, attributi, target)
+            albero = {bestAttributo: {}}  # creo dizionario
+
+            tmp = []
+            for i in dataset:
+                if tmp.count(i[bestAttributo]) != 1:
+                    tmp.append(i[bestAttributo])
+
+            for i in tmp:
+                subAttributi = [attr for attr in attributi if attr != bestAttributo]
+                exs = getSubDataset(dataset, bestAttributo, i)
+                sotto_albero = creaAlberoDecisione(exs, subAttributi, target, dataset, 0)  # 0 non pruna
+                albero[bestAttributo][i] = sotto_albero
+
+        return albero
+
+def pluralityValue(dataset, target):
     # La funzione ritorna il valore ripetuto piu' volte di target
-    vals = [i[target] for i in data]
+    vals = [i[target] for i in dataset]
     maxFreq = 0
     valoreFrequente = None
 
     # Il seguente ciclo permette di avere una lista di valori non ripetuti
     tmp = []
-    for i in data:
+    for i in dataset:
         if tmp.count(i[target]) != 1:
             tmp.append(i[target])
 

@@ -33,7 +33,6 @@ def validation_set(dataset, attributi, target, percentuale,pruning):
     time.sleep(0.15)
 
     # Si inizializzano le variabili
-    score = 0.0
     trainSet = dataset[:]
     validationSet = []
     tmp = []
@@ -60,19 +59,25 @@ def validation_set(dataset, attributi, target, percentuale,pruning):
     # Si crea l'albero di decisione usando il trainset
     albero = creaAlberoDecisione(trainSet, attributi, target, None, pruning)
 
+    # si calcola lo score sul trainset
+    score_train = 0.0
+    for i in trainSet:
+        if getValoreTarget(albero, i) is not None:
+            score_train = score_train + 1.0
+    score_train = score_train / len(trainSet)
     # Si calcola lo score dell'albero in base ai dati del validation set
-
+    score_validation = 0.0
     for i in validationSet:
         if getValoreTarget(albero, i) is not None:
-            score = score + 1.0
+            score_validation = score_validation + 1.0
 
-    score = score / len(validationSet)
+    score_validation = score_validation / len(validationSet)
     print
     sys.stdout.write("FINE VALIDATION SET")
     sys.stdout.flush()
     print
     #ritorna l'accuratezza
-    return Decimal(score).quantize(Decimal('0.00001'))
+    return [Decimal(score_train).quantize(Decimal('0.0001')),Decimal(score_validation).quantize(Decimal('0.0001'))]
 
 
 def getValoreTarget(albero, riga):
@@ -93,10 +98,10 @@ def getValoreTarget(albero, riga):
 
 
 def mainFunction():
-    dataSets = ["australian.csv"]
-    posizione_target = [11]
-    #dataSets = ["carClassifier.csv","uci-20070111-page-blocks.csv","australian.csv"]
-    #posizione_target = [5,1,14]
+    dataSets = ["agaricus-lepiota.csv"]
+    posizione_target = [22]
+    #dataSets = ["carClassifier.csv","uci-20070111-page-blocks.csv","australian.csv","agaricus-lepiota.csv"]
+    #posizione_target = [5,1,14,22]
 
     for i in range(0, dataSets.__len__()) :
         dataset, attributi, target = importa_dataset_csv(dataSets[i], posizione_target[i])
@@ -120,18 +125,22 @@ def mainFunction():
         tempo = []
         tempo_pruning = []
         percentuali = [0.7]
-        percentuali = [0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95]
+        percentuali = [0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,0.99]
         for i in range(0,len(percentuali)) :
             start = timer()
             tmp = validation_set(dataset, attributi, target, percentuali[i], 0)  # 0 sta per senza pruning
+            accuratezza.append(tmp)
+            print '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+            print tmp
             end = timer()
             tempo.append(Decimal(end - start).quantize(Decimal('0.0001')))
+            #TEST PRUNING
             start = timer()
             tmp_pruning = validation_set(dataset, attributi, target, percentuali[i],1)   #1 sta per pruning
+            accuratezza_pruning.append(tmp_pruning)
             end = timer()
             tempo_pruning.append(Decimal(end - start).quantize(Decimal('0.0001')))
-            accuratezza.append(tmp)
-            accuratezza_pruning.append(tmp_pruning)
+
             #70 trainset e 30 testset
         print "valore accuratezza :" + str(accuratezza)
         print "valore accuratezza pruning:" + str(accuratezza_pruning)
@@ -139,11 +148,13 @@ def mainFunction():
         plt.title("Curva di apprendimento")
         plt.xlabel("Percentuali apprendimento test set")
         plt.ylabel("Accuratezza su validation set")
-        #plt.show()
+        plt.legend(['Accuratezza training', 'Accuratezza validation set'])
+        plt.show()
         plt.plot(percentuali, accuratezza_pruning)
         plt.title("Curva di apprendimento CON PRUNING")
         plt.xlabel("Percentuali apprendimento test set")
         plt.ylabel("Accuratezza su validation set")
+        plt.legend(['Accuratezza training', 'Accuratezza validation set'])
         #plt.show()
 
         print "tempo validation set senza pruning in base alle percentuali di train e test :" + str(tempo)

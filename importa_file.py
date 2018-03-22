@@ -1,4 +1,3 @@
-
 from random import shuffle
 
 def importa_dataset_csv(nome_file, posizione_target):
