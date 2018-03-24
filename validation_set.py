@@ -32,8 +32,6 @@ def validation_set(dataset, attributi, target, percentuale,pruning):
     for i in range(0, numeroEsempi):
         tmp.append(trainSet.pop(0))
     print "##############"
-    print "##############"
-    print "##############"
     print " LUNGHEZZA TMP:"+str(tmp.__len__())
     for i in range(len(trainSet)):
         validationSet.append(trainSet.pop(0))
@@ -49,8 +47,11 @@ def validation_set(dataset, attributi, target, percentuale,pruning):
     print "##############    FINE TEST"
     print "PERCENTUALE DI APPRENDIMENTO:"+str(percentuale*100)+"%"
     # Si crea l'albero di decisione usando il trainset
-    albero = creaAlberoDecisione(trainSet, attributi, target, None, pruning)
-
+    albero = creaAlberoDecisione(trainSet, attributi, target, None)
+    #FUNZIONE USATA PER VEDERE l'ALBERO SU ESEMPI SEMPLICI
+    if pruning == 1 :
+        albero_pruned = pruna_albero(albero)
+    #stampa_albero(albero,"")
     # si calcola lo score sul trainset
     score_train = 0.0
     for i in trainSet:

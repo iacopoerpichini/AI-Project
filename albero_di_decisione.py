@@ -3,82 +3,43 @@ import sys
 import math
 
 
-def creaAlberoDecisione(dataset, attributi, target, parentDataset, pruning):
-    if pruning == 0 :
-        valori = [i[target] for i in dataset]
+def creaAlberoDecisione(dataset, attributi, target, parentDataset):
+    valori = [i[target] for i in dataset]
 
-        # EVENTUALMENTE TOGLIERE QUESTA PARTE DEL PLURALITY !!!!!!!!
-        # Se il dataset e' vuoto o non ci sono attributi oltre a quello target si ritorna il valore di target
-        # ripetuto piu' volte
-        if not dataset:
-            return pluralityValue(parentDataset, target)
-        elif (len(attributi) - 1) <= 0:
-            return pluralityValue(dataset, target)
-        #EVENTUALMENTE TOGLIERE QUESTA PARTE DEL PLURALITY !!!!!!!!
+    # EVENTUALMENTE TOGLIERE QUESTA PARTE DEL PLURALITY !!!!!!!!
+    # Se il dataset e' vuoto o non ci sono attributi oltre a quello target si ritorna il valore di target
+    # ripetuto piu' volte
+    if not dataset:
+        return pluralityValue(parentDataset, target)
+    elif (len(attributi) - 1) <= 0:
+        return pluralityValue(dataset, target)
+    #EVENTUALMENTE TOGLIERE QUESTA PARTE DEL PLURALITY !!!!!!!!
 
 
-        # Se il valore di target sono tutti uguali non ce' bisogno di continuare la produzione di sottoalberi
-        # e si ritorna il primo valore della lista valori
-        elif valori.count(valori[0]) == len(valori):
-            return valori[0]
+    # Se il valore di target sono tutti uguali non ce' bisogno di continuare la produzione di sottoalberi
+    # e si ritorna il primo valore della lista valori
+    elif valori.count(valori[0]) == len(valori):
+        return valori[0]
 
-        # Se non siamo nei casi precedenti si effettua la ricerca del miglior attributo con importance
-        # e si crea un sotto albero per ogni valore di bestAttributo
-        else:
-            bestAttributo = importanza(dataset, attributi, target)
-            albero = {bestAttributo:{}} #creo dizionario
-
-            tmp = []
-            for i in dataset:
-                if tmp.count(i[bestAttributo]) != 1:
-                    tmp.append(i[bestAttributo])
-
-            for i in tmp:
-                subAttributi = [attr for attr in attributi if attr != bestAttributo]
-                exs = getSubDataset(dataset, bestAttributo, i)
-                sotto_albero = creaAlberoDecisione(exs, subAttributi, target, dataset, 0)#0 non pruna
-                albero[bestAttributo][i] = sotto_albero
-
-        return albero
+    # Se non siamo nei casi precedenti si effettua la ricerca del miglior attributo con importance
+    # e si crea un sotto albero per ogni valore di bestAttributo
     else:
-        ###MANCA IMPLEMENTAZIONEEEEEE
-        valori = [i[target] for i in dataset]
+        bestAttributo = importanza(dataset, attributi, target)
+        albero = {bestAttributo:{}} #creo dizionario
 
-        # EVENTUALMENTE TOGLIERE QUESTA PARTE DEL PLURALITY !!!!!!!!
-        # Se il dataset e' vuoto o non ci sono attributi oltre a quello target si ritorna il valore di target
-        # ripetuto piu' volte
-        if not dataset:
-            return pluralityValue(parentDataset, target)
-        elif (len(attributi) - 1) <= 0:
-            return pluralityValue(dataset, target)
-        # EVENTUALMENTE TOGLIERE QUESTA PARTE DEL PLURALITY !!!!!!!!
+        tmp = []
+        for i in dataset:
+            if tmp.count(i[bestAttributo]) != 1:
+                tmp.append(i[bestAttributo])
 
-        # Se il valore di target sono tutti uguali non ce' bisogno di continuare la produzione di sottoalberi
-        # e si ritorna il primo valore della lista valori
-        elif valori.count(valori[0]) == len(valori):
-            return valori[0]
+        for i in tmp:
+            subAttributi = [attr for attr in attributi if attr != bestAttributo]
+            exs = getSubDataset(dataset, bestAttributo, i)
+            sotto_albero = creaAlberoDecisione(exs, subAttributi, target, dataset)
+            albero[bestAttributo][i] = sotto_albero
 
-        # Se non siamo nei casi precedenti si effettua la ricerca del miglior attributo con importance
-        # e si crea un sotto albero per ogni valore di bestAttributo
-        else:
-            #PER FARE IL PRUNING DEVO VEDERE QUANTO SI RAMIFICA L'ALBERO E POTARE
-            #SECONDO UNA PROFONDITA' DELL'ALBERO PREDEFINITA OPPURE SECONDO UN
-            #FATTORE DI RAMIFICAZIONE
-            bestAttributo = importanza(dataset, attributi, target)
-            albero = {bestAttributo: {}}  # creo dizionario
+    return albero
 
-            tmp = []
-            for i in dataset:
-                if tmp.count(i[bestAttributo]) != 1:
-                    tmp.append(i[bestAttributo])
-
-            for i in tmp:
-                subAttributi = [attr for attr in attributi if attr != bestAttributo]
-                exs = getSubDataset(dataset, bestAttributo, i)
-                sotto_albero = creaAlberoDecisione(exs, subAttributi, target, dataset, 0)  # 0 non pruna
-                albero[bestAttributo][i] = sotto_albero
-
-        return albero
 
 def pluralityValue(dataset, target):
     # La funzione ritorna il valore ripetuto piu' volte di target
@@ -166,3 +127,17 @@ def getFrequenzaValori(data, attribute):
             lista_frequenze[i[attribute]] = 1.0
 
     return lista_frequenze
+
+def stampa_albero(albero, str):
+    #LA FUNZIONE SCORRE L'ALBERO RICORSIVAMENTE E LO STAMPA
+    if type(albero) == dict:
+        print "%s%s" % (str, albero.keys()[0])
+        for item in albero.values()[0].keys():
+            print "%s\t%s" % (str, item)
+            stampa_albero(albero.values()[0][item], str + "\t")
+    else:
+        print "%s\t->\t%s" % (str, albero)
+
+def pruna_albero(albero):
+    #IMPLEMENTARE UNA FUNZIONE CHE PRUNA UN ALBERO DI DECISIONE
+    print "Applico pruning"

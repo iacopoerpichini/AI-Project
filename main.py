@@ -7,10 +7,10 @@ from decimal import *
 def main():
     dataSets = ["balance-scale.csv"]
     posizione_target = [1]
+    percentuali = [0.7]
     percentuali = [0.01, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9,0.95, 0.99]
     #dataSets = ["balance-scale.csv","carClassifier.csv","agaricus-lepiota.csv"]
-    #posizione_target = [1,2,22]
-    #percentuali = [0.7, 0.8]
+    #posizione_target = [1,1,22]
 
     for i in range(0, dataSets.__len__()) :
         dataset, attributi, target = importa_dataset_csv(dataSets[i], posizione_target[i])
@@ -36,22 +36,18 @@ def main():
             start = timer()
             tmp = validation_set(dataset, attributi, target, percentuali[i], 0)  # 0 sta per senza pruning
             accuratezza.append(tmp)
-            print '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
             print tmp
             end = timer()
             tempo.append(Decimal(end - start).quantize(Decimal('0.0001')))
             #TEST PRUNING
-            '''
             start = timer()
-            tmp_pruning = validation_set(dataset, attributi, target, percentuali[i],1)   #1 sta per pruning
+            tmp_pruning = validation_set(dataset, attributi, target, percentuali[i],1)
             accuratezza_pruning.append(tmp_pruning)
             end = timer()
             tempo_pruning.append(Decimal(end - start).quantize(Decimal('0.0001')))
-            '''
-
 
         crea_grafico(percentuali,accuratezza,0)
-        #crea_grafico(percentuali,accuratezza_pruning,1)
+        crea_grafico(percentuali,accuratezza_pruning,1)
         print "tempo validation set senza pruning in base alle percentuali di train e test :" + str(tempo)
         print "tempo validation set con pruning in base alle percentuali di train e test :" + str(tempo_pruning)
         print "percentuali di apprendimento :" + str(percentuali)
