@@ -1,9 +1,9 @@
 import sys
-
+import copy
 import math
 
 
-def creaAlberoDecisione(dataset, attributi, target, parentDataset):
+def creaAlberoDecisione(dataset, attributi, target, parentDataset, profondita):
     valori = [i[target] for i in dataset]
 
     # EVENTUALMENTE TOGLIERE QUESTA PARTE DEL PLURALITY !!!!!!!!
@@ -15,6 +15,8 @@ def creaAlberoDecisione(dataset, attributi, target, parentDataset):
         return pluralityValue(dataset, target)
     #EVENTUALMENTE TOGLIERE QUESTA PARTE DEL PLURALITY !!!!!!!!
 
+    if profondita == 0 :
+        return pluralityValue(dataset,target)
 
     # Se il valore di target sono tutti uguali non ce' bisogno di continuare la produzione di sottoalberi
     # e si ritorna il primo valore della lista valori
@@ -35,7 +37,7 @@ def creaAlberoDecisione(dataset, attributi, target, parentDataset):
         for i in tmp:
             subAttributi = [attr for attr in attributi if attr != bestAttributo]
             exs = getSubDataset(dataset, bestAttributo, i)
-            sotto_albero = creaAlberoDecisione(exs, subAttributi, target, dataset)
+            sotto_albero = creaAlberoDecisione(exs, subAttributi, target, dataset, profondita-1)
             albero[bestAttributo][i] = sotto_albero
 
     return albero
@@ -73,7 +75,6 @@ def importanza(dataset, attributi, target):
     for i in attributi:
         sys.stdout.write("\r{0}".format("Calcolo guadagno di:" + str(i)))
         sys.stdout.flush()
-
         tmpGain = gain(dataset, i, target)
 
         # Se il gain trovato e' maggiore del massimo precedente salvo il valore e il relativo attributo
@@ -138,6 +139,3 @@ def stampa_albero(albero, str):
     else:
         print "%s\t->\t%s" % (str, albero)
 
-def pruna_albero(albero):
-    #IMPLEMENTARE UNA FUNZIONE CHE PRUNA UN ALBERO DI DECISIONE
-    print "Applico pruning"

@@ -1,28 +1,17 @@
 from albero_di_decisione import *
 from decimal import *
+from random import shuffle
 
 
-def validation_set(dataset, attributi, target, percentuale,pruning):
-    #SCRIVERE L'ALG DI APPRENDIMENTO ALBERI CON E SENZA PRUNING
-    #A SECONDA DEL VALORE CHE PASSERO' PER PARAMETRO
-    if pruning == 0 :
-        print "SENZA PRUNING"
-    else:
-        print "CON PRUNING"
+def validation_set(dataset, attributi, target, percentuale, profondita):
     # La funzione divide il dataset in trainset e validation set a seconda della percentuale
-    # passata per parametro
+    # passata per parametro la profondita serve per il pruning
 
 
     #POTREI FARE UN INTERVALLO DI PERCENTUALI E MISURARE L'ACCURATEZZA CON L'ENTROPIA
     #QUEST OPERAZIONE FA FARE CON PRUNING E SENZA PRUNING E STAMPARE DUE GRAFICI
     #CON ASCISSA PERCENTUALE DI TRAIN RISPETTO AL TEST E ORDINATA ACCURATEZZA ENTROPIA
     numeroEsempi = (int) (len(dataset)*percentuale)
-    print "NUMERO DATI:"+str(len(dataset))
-    print "NUMERO ESEMPI:"+str(numeroEsempi)
-
-    sys.stdout.write("VALIDATION SET")
-    sys.stdout.flush()
-
     # Si inizializzano le variabili
     trainSet = dataset[:]
     validationSet = []
@@ -31,12 +20,18 @@ def validation_set(dataset, attributi, target, percentuale,pruning):
     # I seguenti cicli permettono di dividere trainset e testset in base a una percentuale
     for i in range(0, numeroEsempi):
         tmp.append(trainSet.pop(0))
-    print "##############"
-    print " LUNGHEZZA TMP:"+str(tmp.__len__())
     for i in range(len(trainSet)):
         validationSet.append(trainSet.pop(0))
-    print 'TRAIN SET'
     trainSet.extend(tmp)
+    # Si crea l'albero di decisione usando il trainset
+    albero = creaAlberoDecisione(trainSet, attributi, target, None, profondita)
+
+    ''' DEBUG DATI CORRETTI
+    print "NUMERO DATI:"+str(len(dataset))
+    print "NUMERO ESEMPI:"+str(numeroEsempi)
+    sys.stdout.write("VALIDATION SET")
+    sys.stdout.flush()
+    print 'TRAIN SET'
     print "Lunghezza TRAIN:"+str(len(trainSet))
     print "##############    TRAIN"
     #print trainSet
@@ -46,31 +41,34 @@ def validation_set(dataset, attributi, target, percentuale,pruning):
     #print validationSet
     print "##############    FINE TEST"
     print "PERCENTUALE DI APPRENDIMENTO:"+str(percentuale*100)+"%"
-    # Si crea l'albero di decisione usando il trainset
-    albero = creaAlberoDecisione(trainSet, attributi, target, None)
-    #FUNZIONE USATA PER VEDERE l'ALBERO SU ESEMPI SEMPLICI
-    if pruning == 1 :
-        albero_pruned = pruna_albero(albero)
+    #HA SENSO RIMISCHIARE I DATI?!?!?!
+    # shuffle(albero)
+    # print albero
     #stampa_albero(albero,"")
-    # si calcola lo score sul trainset
-    score_train = 0.0
-    for i in trainSet:
-        if getValoreTarget(albero, i) is not None:
-            score_train = score_train + 1.0
-    score_train = score_train / len(trainSet)
-    # Si calcola lo score dell'albero in base ai dati del validation set
-    score_validation = 0.0
-    for i in validationSet:
-        if getValoreTarget(albero, i) is not None:
-            score_validation = score_validation + 1.0
+    '''
 
-    score_validation = score_validation / len(validationSet)
-    print
-    sys.stdout.write("FINE VALIDATION SET")
-    sys.stdout.flush()
-    print
+    #FUNZIONE USATA PER VEDERE l'ALBERO SU ESEMPI SEMPLICI
+    accuratezza_train = 0.0
+    for i in trainSet:
+        #IMPORTANTISSIMO!!!!!!!!!!!1
+        #GUARDARE BENE QUESTO IF
+        #if getValoreTarget(albero, i) is not None :
+        if getValoreTarget(albero, i) == i[target]:
+            accuratezza_train = accuratezza_train + 1.0
+    accuratezza_train = accuratezza_train / len(trainSet)
+    # Si calcola lo score dell'albero in base ai dati del validation set
+    accuratezza_validation = 0.0
+    for i in validationSet:
+        #if getValoreTarget(albero, i) is not None :
+        if getValoreTarget(albero, i) == i[target]:
+            accuratezza_validation = accuratezza_validation + 1.0
+
+    accuratezza_validation = accuratezza_validation / len(validationSet)
+
+    print ""
+    print "Percentuale training:"+str(percentuale*100)+"%"
     #ritorna l'accuratezza
-    return [Decimal(score_train).quantize(Decimal('0.0001')),Decimal(score_validation).quantize(Decimal('0.0001'))]
+    return [Decimal(accuratezza_train).quantize(Decimal('0.0001')),Decimal(accuratezza_validation).quantize(Decimal('0.0001'))]
 
 
 def getValoreTarget(albero, riga):
