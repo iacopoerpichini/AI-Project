@@ -1,22 +1,21 @@
 import sys
-import copy
 import math
 
 
-def creaAlberoDecisione(dataset, attributi, target, parentDataset, profondita):
+def crea_albero_decisione(dataset, attributi, target, parentDataset, profondita):
     valori = [i[target] for i in dataset]
 
     # EVENTUALMENTE TOGLIERE QUESTA PARTE DEL PLURALITY !!!!!!!!
     # Se il dataset e' vuoto o non ci sono attributi oltre a quello target si ritorna il valore di target
     # ripetuto piu' volte
     if not dataset:
-        return pluralityValue(parentDataset, target)
+        return plurality_value(parentDataset, target)
     elif (len(attributi) - 1) <= 0:
-        return pluralityValue(dataset, target)
+        return plurality_value(dataset, target)
     #EVENTUALMENTE TOGLIERE QUESTA PARTE DEL PLURALITY !!!!!!!!
 
     if profondita == 0 :
-        return pluralityValue(dataset,target)
+        return plurality_value(dataset, target)
 
     # Se il valore di target sono tutti uguali non ce' bisogno di continuare la produzione di sottoalberi
     # e si ritorna il primo valore della lista valori
@@ -24,30 +23,30 @@ def creaAlberoDecisione(dataset, attributi, target, parentDataset, profondita):
         return valori[0]
 
     # Se non siamo nei casi precedenti si effettua la ricerca del miglior attributo con importance
-    # e si crea un sotto albero per ogni valore di bestAttributo
+    # e si crea un sotto albero per ogni valore di miglior_attributo
     else:
-        bestAttributo = importanza(dataset, attributi, target)
-        albero = {bestAttributo:{}} #creo dizionario
+        miglior_attributo = importanza(dataset, attributi, target)
+        albero = {miglior_attributo:{}} #creo dizionario
 
         tmp = []
         for i in dataset:
-            if tmp.count(i[bestAttributo]) != 1:
-                tmp.append(i[bestAttributo])
+            if tmp.count(i[miglior_attributo]) != 1:
+                tmp.append(i[miglior_attributo])
 
         for i in tmp:
-            subAttributi = [attr for attr in attributi if attr != bestAttributo]
-            exs = getSubDataset(dataset, bestAttributo, i)
-            sotto_albero = creaAlberoDecisione(exs, subAttributi, target, dataset, profondita-1)
-            albero[bestAttributo][i] = sotto_albero
+            sub_attributi = [attr for attr in attributi if attr != miglior_attributo]
+            exs = get_sub_dataset(dataset, miglior_attributo, i)
+            sotto_albero = crea_albero_decisione(exs, sub_attributi, target, dataset, profondita - 1)
+            albero[miglior_attributo][i] = sotto_albero
 
     return albero
 
 
-def pluralityValue(dataset, target):
+def plurality_value(dataset, target):
     # La funzione ritorna il valore ripetuto piu' volte di target
-    vals = [i[target] for i in dataset]
-    maxFreq = 0
-    valoreFrequente = None
+    valori = [i[target] for i in dataset]
+    max_freq = 0
+    valore_frequente = None
 
     # Il seguente ciclo permette di avere una lista di valori non ripetuti
     tmp = []
@@ -56,11 +55,11 @@ def pluralityValue(dataset, target):
             tmp.append(i[target])
 
     for i in tmp:
-        if vals.count(i) > maxFreq:
-            maxFreq = vals.count(i)
-            valoreFrequente = i
+        if valori.count(i) > max_freq:
+            max_freq = valori.count(i)
+            valore_frequente = i
 
-    return valoreFrequente
+    return valore_frequente
 
 def importanza(dataset, attributi, target):
     # La funzione determina dato un attributo target, un insieme di attributi e un dataset
@@ -68,33 +67,33 @@ def importanza(dataset, attributi, target):
 
     # Il gain viene inizializzato a -1 perche' in alcuni casi di
     # classificazione tutti gli attributi hanno gain pari a 0
-    bestGain = -1.0
-    bestAttributo = None
+    best_gain = -1.0
+    best_attributo = None
 
     # Per ogni attributo chiamo il metodo di calcolo del gain in base all'impurita'
     for i in attributi:
         sys.stdout.write("\r{0}".format("Calcolo guadagno di:" + str(i)))
         sys.stdout.flush()
-        tmpGain = gain(dataset, i, target)
+        tmp_gain = gain(dataset, i, target)
 
         # Se il gain trovato e' maggiore del massimo precedente salvo il valore e il relativo attributo
-        if tmpGain >= bestGain and i != target:
-            bestGain = tmpGain
-            bestAttributo = i
-    return bestAttributo
+        if tmp_gain >= best_gain and i != target:
+            best_gain = tmp_gain
+            best_attributo = i
+    return best_attributo
 
-def getSubDataset(data, attribute, value):
+def get_sub_dataset(data, attribute, value):
     # La funzione cerca tra i record di data quelli che hanno un certo valore per un certo attributo
-    subDataset = []
+    sub_dataset = []
     for i in data:
         if i[attribute] == value:
-            subDataset.append(i)
-    # Viene ritornao il subDataset usato per la creazione di un sotto albero
-    return subDataset
+            sub_dataset.append(i)
+    # Viene ritornao il sub_dataset usato per la creazione di un sotto albero
+    return sub_dataset
 
 def gain(dataset, attributi, target):
     # La funzione permette il calcolo dell'information gain di un attributo
-    lista_frequenze = getFrequenzaValori(dataset, attributi)
+    lista_frequenze = get_frequenza_valori(dataset, attributi)
 
     # Il seguente ciclo permette il calcolo del secondo termine della formula dell'information gain
     secondo_termine = 0.0
@@ -108,8 +107,7 @@ def gain(dataset, attributi, target):
 #!!!! METTERE LA FUNZIONE ENTROPIA DENTRO IL GAIN!!!!!!!
 def entropia(dataset, target):
     # La funzione calcola l' entropia di un attributo rispetto al dataSet
-
-    lista_frequenze = getFrequenzaValori(dataset, target)
+    lista_frequenze = get_frequenza_valori(dataset, target)
     entropia = 0.0
     for i in lista_frequenze.values():
         entropia = entropia + (-i / len(dataset)) * math.log(i / len(dataset), 2)
@@ -117,15 +115,14 @@ def entropia(dataset, target):
     return entropia
 #!!!! METTERE LA FUNZIONE ENTROPIA DENTRO IL GAIN!!!!!!!
 
-def getFrequenzaValori(data, attribute):
+def get_frequenza_valori(data, attributi):
     # La funzione crea un dizionario dove ad ogni possibile valore di attributo viene associata la sua frequenza
     lista_frequenze = {}
-
     for i in data:
-        if (lista_frequenze.has_key(i[attribute])):
-            lista_frequenze[i[attribute]] += 1.0
+        if (lista_frequenze.has_key(i[attributi])):
+            lista_frequenze[i[attributi]] += 1.0
         else:
-            lista_frequenze[i[attribute]] = 1.0
+            lista_frequenze[i[attributi]] = 1.0
 
     return lista_frequenze
 
