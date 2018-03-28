@@ -1,8 +1,12 @@
 
-Guida installazione
+Progetto alberi decisionali
 =======
 
-Per far funzionare il programma basta semplicemente scaricarlo e eseguirlo, al suo interno sono già presenti tre data set su cui vengono eseguite delle prove.
+Per maggiori informazioni consultare la relazione associata.
+
+Guida installazione
+-----------
+Per far funzionare il programma basta semplicemente scaricarlo e eseguirlo (io utilizzo [pyCharm](https://www.jetbrains.com/pycharm/) come ide), al suo interno sono già presenti tre data set su cui vengono eseguite delle prove.
 
 Per modificare i parametri basta modificare il file "main.py" nella sezione inizializzazioni variabili.
 
