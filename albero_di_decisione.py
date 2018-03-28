@@ -1,19 +1,16 @@
-import sys
 import math
 
 
-def crea_albero_decisione(dataset, attributi, target, parentDataset, profondita):
+def crea_albero_decisione(dataset, attributi, target, parentDataset, profondita, min_foglie_campione):
     valori = [i[target] for i in dataset]
 
-    # EVENTUALMENTE TOGLIERE QUESTA PARTE DEL PLURALITY !!!!!!!!
     # Se il dataset e' vuoto o non ci sono attributi oltre a quello target si ritorna il valore di target
     # ripetuto piu' volte
     if not dataset:
         return plurality_value(parentDataset, target)
     elif (len(attributi) - 1) <= 0:
         return plurality_value(dataset, target)
-    #EVENTUALMENTE TOGLIERE QUESTA PARTE DEL PLURALITY !!!!!!!!
-
+    #controllo profondita' pruning!!!!!!!!!
     if profondita == 0 :
         return plurality_value(dataset, target)
 
@@ -36,7 +33,10 @@ def crea_albero_decisione(dataset, attributi, target, parentDataset, profondita)
         for i in tmp:
             sub_attributi = [attr for attr in attributi if attr != miglior_attributo]
             exs = get_sub_dataset(dataset, miglior_attributo, i)
-            sotto_albero = crea_albero_decisione(exs, sub_attributi, target, dataset, profondita - 1)
+            #controllo per vedere se siamo con troppi campioni mi serve per il pruning
+            if len(exs) < min_foglie_campione :
+                return plurality_value(dataset,target)
+            sotto_albero = crea_albero_decisione(exs, sub_attributi, target, dataset, profondita - 1, min_foglie_campione)
             albero[miglior_attributo][i] = sotto_albero
 
     return albero
@@ -72,8 +72,11 @@ def importanza(dataset, attributi, target):
 
     # Per ogni attributo chiamo il metodo di calcolo del gain in base all'impurita'
     for i in attributi:
+        '''
+        #DEBUG
         sys.stdout.write("\r{0}".format("Calcolo guadagno di:" + str(i)))
         sys.stdout.flush()
+        '''
         tmp_gain = gain(dataset, i, target)
 
         # Se il gain trovato e' maggiore del massimo precedente salvo il valore e il relativo attributo

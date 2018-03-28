@@ -2,7 +2,7 @@ from albero_di_decisione import *
 import fpformat
 from random import shuffle
 
-def validation_set(dataset, attributi, target, percentuale, profondita, num_test):
+def validation_set(dataset, attributi, target, percentuale, profondita,min_foglie_campione, num_test):
     # La funzione divide il dataset in trainset e validation set a seconda della percentuale
     # passata per parametro la profondita serve per il pruning
 
@@ -28,7 +28,7 @@ def validation_set(dataset, attributi, target, percentuale, profondita, num_test
         train_set.extend(tmp)
 
         # Si crea l'albero di decisione usando il trainset
-        albero = crea_albero_decisione(train_set, attributi, target, None, profondita)
+        albero = crea_albero_decisione(train_set, attributi, target, None, profondita, min_foglie_campione)
 
         ''' DEBUG DATI CORRETTI
         print "NUMERO DATI:"+str(len(dataset))
@@ -66,8 +66,6 @@ def validation_set(dataset, attributi, target, percentuale, profondita, num_test
                 accuratezza_validation = accuratezza_validation + 1.0
         accuratezza_validation_tot = accuratezza_validation_tot + (accuratezza_validation / len(validation_set))
 
-    print ""
-    print "Percentuale training:"+str(percentuale*100)+"%"
     #ritorna l'accuratezza
     return [fpformat.fix(accuratezza_train_tot/num_test,4),fpformat.fix(accuratezza_validation_tot/num_test,4)]
 
