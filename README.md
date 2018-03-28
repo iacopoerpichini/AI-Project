@@ -23,7 +23,7 @@ Devo fare alcune osservazioni:
 
 * Dobbiamo scegliere con criterio la posizione del target di ogni dataset contando che i numeri vanno da 1...N
 
-* Qui sono presenti le descrizioni dei dataset [utilizzati] (https://github.com/iacopoerpichini/AI-Project/tree/master/Dataset%20info).
+* Qui sono presenti le descrizioni dei dataset [utilizzati](https://github.com/iacopoerpichini/AI-Project/tree/master/Dataset%20info).
 
 Riferimenti
 -----------
