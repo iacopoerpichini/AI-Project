@@ -23,10 +23,12 @@ Devo fare alcune osservazioni:
 
 * Dobbiamo scegliere con criterio la posizione del target di ogni dataset contando che i numeri vanno da 1...N
 
+* Qui sono presenti le descrizioni dei dataset [utilizzati] (https://github.com/iacopoerpichini/AI-Project/tree/master/Dataset%20info).
+
 Riferimenti
 -----------
 
-Il seguente [Articolo](http://archive.oreilly.com/pub/a/python/2006/02/09/ai_decision_trees.html) mi ha aiutato a capire a fondo gli alberi decisionali e a implementare l'algoritmo id3.
+Il seguente [Articolo](http://archive.oreilly.com/pub/a/python/2006/02/09/ai_decision_trees.html) mi ha aiutato a capire a fondo gli alberi decisionali e ad implementare l'algoritmo id3.
 
 Mentre il seguente [Articolo](https://triangleinequality.wordpress.com/2013/09/01/decision-trees-part-3-pruning-your-tree/) mi è servito per capire a fondo il pruning per poi poterlo implementare.
 
