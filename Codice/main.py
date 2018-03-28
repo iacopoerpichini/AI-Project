@@ -8,13 +8,13 @@ import sys
 def main():
     #INIZIALIZZAZIONI VARIABILI
     percentuali = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
-    data_sets = ["contraceptive.csv","balance-scale.csv","carClassifier.csv","agaricus-lepiota.csv"]
-    posizione_target = [10, 1, 1, 23]
-    profondita = [5, 1, 3, 3]
-    min_foglie_campione = [12, 1, 1, 1]
-    num_test = [5, 15, 10, 3]
+    data_sets = ["contraceptive.csv","balance-scale.csv","agaricus-lepiota.csv"]
+    posizione_target = [10, 1, 23]
+    profondita = [5, 8, 3]
+    min_foglie_campione = [1, 2, 1]
+    num_test = [5, 15, 3]
 
-    for j in range(0, 1) :
+    for j in range(len(data_sets)) :
         dataset, attributi, target = importa_dataset_csv(data_sets[j], posizione_target[j])
 
         '''
