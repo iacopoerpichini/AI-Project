@@ -18,7 +18,7 @@ Text attributes *italic*, **bold**,
 
 Articolo per algoritmo id3 [Articolo](http://archive.oreilly.com/pub/a/python/2006/02/09/ai_decision_trees.html).
 
-Mitchell cap.3 [link](Mitchell cap.3).
+Mitchell cap.3 [download](https://github.com/iacopoerpichini/AI-Project/blob/master/Mitchell%20cap.3.pdf).
 
 <<<   No space between ] and (  >>>
 
