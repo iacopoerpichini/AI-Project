@@ -15,7 +15,6 @@ def main():
     min_sample_leaf = [1, 1, 1, 2, 1]
     #Parametro per eseguire test multipli e migliorare l'accuratezza
     num_test = [2, 4, 4, 20, 2]
-
     for j in range(len(data_sets)) :
         dataset, attributes, target = importa_dataset_csv(data_sets[j], target_positions[j])
         '''
@@ -53,8 +52,8 @@ def main():
             accuracy_pruning_validation.append(tmp_pruning[1])
             pruning_time.append(fpformat.fix((end - start),4))
         #OUTPUT PROGRAMMA
-        #create_plot(data_sets[j], percentages, accuracy_train, accuracy_validation, 0)
-        #create_plot(data_sets[j], percentages, accuracy_pruning_train, accuracy_pruning_validation, 1)
+        create_plot(data_sets[j], percentages, accuracy_train, accuracy_validation, 0)
+        create_plot(data_sets[j], percentages, accuracy_pruning_train, accuracy_pruning_validation, 1)
         create_plot_validation(data_sets[j], percentages, accuracy_validation, accuracy_pruning_validation)
         print "\nTempi esecuzione validation set senza pruning:" + str(time) + " con numero di test:" +str(num_test[j])
         print "Tempi esecuzione validation set con pruning:" + str(pruning_time) + " con numero di test:" +str(num_test[j])

@@ -48,14 +48,14 @@ def validation_set(dataset, attributes, target, percentage, depth, min_sample_le
         accuracy_validation = 0.0
         for i in train_set:
             #IMPORTANTISSIMO!!!!          GUARDARE BENE QUESTO IF
-            if get_target_value(tree, i) is not None : # vecchia versione
-            #if get_target_value(tree, i) == i[target]:
+            #if get_target_value(tree, i) is not None : # vecchia versione
+            if get_target_value(tree, i) == i[target]:
                 accuracy_train = accuracy_train + 1.0
         accuracy_train_tot = accuracy_train_tot + (accuracy_train / len(train_set))
         # Si calcola lo score dell'albero in base ai dati presenti nel validation set
         for i in validation_set:
-            if get_target_value(tree, i) is not None :
-            #if get_target_value(tree, i) == i[target]:
+            #if get_target_value(tree, i) is not None :
+            if get_target_value(tree, i) == i[target]:
                 accuracy_validation = accuracy_validation + 1.0
         accuracy_validation_tot = accuracy_validation_tot + (accuracy_validation / len(validation_set))
 
@@ -69,14 +69,15 @@ def get_target_value(tree, row):
     if type(tree) == type("string"):
         return tree
     else:
-        #aggiunto for
-        for i in range(len(tree.keys())):
-            attribute = tree.keys()[i]#prima era tree.keys()[0]
-            # Se il valore di attributo non viene trovato nel sotto albero la funzione ritorna None in modo da indicare
-            # al livello superiore che l'albero non riesce a trovare una soluzione per line
-            if row[attribute] not in tree[attribute].keys():
-                return None
-            else:
-                value = tree[attribute][row[attribute]]
+        attribute = tree.keys()[0]
+        # Se il valore di attributo non viene trovato nel sotto albero la funzione ritorna None in modo da indicare
+        # al livello superiore che l'albero non riesce a trovare una soluzione per line
+        if row[attribute] not in tree[attribute].keys():
+            values = []
+            for key in tree[attribute].keys():
+                values.append(get_target_value(tree[attribute][key], row))
+            return max(values, key=values.count)
+        else:
+            value = tree[attribute][row[attribute]]
 
         return get_target_value(value, row)
