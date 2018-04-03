@@ -11,11 +11,9 @@ Per far funzionare il programma basta semplicemente scaricarlo e eseguirlo (io u
 Per modificare i parametri basta modificare il file "main.py" nella sezione inizializzazioni variabili.
 
 Variabili dell'ambiente :
-1. percentuali = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9] : Sono le percentuali su cui viene eseguito il validationset per descrivere la curva di apprendimento dell' albero decisionale.
-2. data_sets = ["contraceptive.csv","balance-scale.csv","agaricus-lepiota.csv"] : La lista dei dataset testati.
+1. percentuali = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9] : Sono le percentuali su cui viene eseguito il test per descrivere la curva di apprendimento dell' albero decisionale.
+2. data_sets = ["esempio1.csv","esempio2.csv","esempio3.csv"] : Un esempio di lista di dataset.
 3. posizione_target = [10, 1, 23] : La posizione dei target relativi ai dataset sopra citati.
-4. profondita = [5, 8, 3] : Parametro utilizzato per il pruning nei vari test.
-5. min_foglie_campione = [1, 2, 1]: Parametro utilizzato per il pruning nei vari test.
 6. num_test = [5, 15, 3] : Numero di test ripetuti per disegnare curve meno oscillanti.
 
 I miei test fanno riferimento alle variabili riportate qui sopra.

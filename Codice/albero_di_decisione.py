@@ -1,6 +1,6 @@
 import math
 
-def create_decision_tree(dataset, attributes, target, parent_dataset, depth, min_saple_leaf):
+def create_decision_tree(dataset, attributes, target, parent_dataset, depth):
     values = [i[target] for i in dataset]
     # Se il dataset e' vuoto o non ci sono attributi oltre a quello target si ritorna il valore di target
     # ripetuto piu' volte
@@ -27,12 +27,10 @@ def create_decision_tree(dataset, attributes, target, parent_dataset, depth, min
         for i in tmp:
             sub_attributes = [attr for attr in attributes if attr != best_attribute]
             exs = get_sub_dataset(dataset, best_attribute, i)
-            #controllo per vedere se siamo con troppi campioni mi serve per il pruning
-            if len(exs) < min_saple_leaf :
-                return plurality_value(dataset,target)
-            sub_tree = create_decision_tree(exs, sub_attributes, target, dataset, depth - 1, min_saple_leaf)
+            sub_tree = create_decision_tree(exs, sub_attributes, target, dataset, depth - 1)
             tree[best_attribute][i] = sub_tree
     return tree
+
 
 
 def plurality_value(dataset, target):
