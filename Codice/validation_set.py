@@ -3,8 +3,8 @@ import fpformat
 from random import shuffle
 
 def test(dataset, attributes, target, percentage, num_test, pruning):
-    # La funzione divide il dataset in trainset e validation set a seconda della percentuale
-    # passata per parametro la profondita e il minimo numero di foglie campione servono per il pruning
+    # La funzione divide il dataset in trainset e test set a seconda della percentuale
+    # passata per parametro la profondita per il pruning viene calcolta dal validation set che e' un sottoinseme del trainset
     # mentre il numero di test serve per fare test multipli e calcolare una media di valori
     num_examples = (int) (len(dataset) * percentage)
     # Si inizializzano le variabili
@@ -33,12 +33,12 @@ def test(dataset, attributes, target, percentage, num_test, pruning):
         if pruning == 1 :
             for depth in range(20) :
                 accuracy = 0.0
-                for k in range(5): #FACCIO UNA MEDIA TRA 5 TEST PER SCEGLIERE L'ACCURATEZZA E LA PRONDITA' MIGLIORI PER PRUNARE
+                for k in range(7): #FACCIO UNA MEDIA TRA 5 TEST PER SCEGLIERE L'ACCURATEZZA E LA PRONDITA' MIGLIORI PER PRUNARE
                     tree = create_decision_tree(train_set, attributes, target, None, depth)
                     for i in validation_set :
                         if get_target_value(tree, i) == i[target] :
                             accuracy = accuracy + 1.0
-                accuracy /= len(validation_set) * 5
+                accuracy /= len(validation_set) * 7
                 if best_score < accuracy :
                     best_score = accuracy
                     best_depth = depth

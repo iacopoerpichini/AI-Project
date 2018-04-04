@@ -1,6 +1,6 @@
 from random import shuffle
 
-def importa_dataset_csv(file_name, target_position):
+def import_dataset_csv(file_name, target_position):
     # La funzione ritorna un dataset, una lista di attributi e l'attributo target
     # un file csv (comma separeted values) e la posizione del target all'interno della lista di attributi
     file = open(file_name, 'r')

@@ -1,4 +1,4 @@
-from importa_file import importa_dataset_csv
+from importa_file import import_dataset_csv
 from validation_set import *
 from grafico import *
 from timeit import default_timer as timer
@@ -10,11 +10,11 @@ percentages = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
 data_sets = ["votes.csv", "car-classifier.csv", "contraceptive.csv"]
 target_positions = [17, 7, 10]
 #Parametro per eseguire test multipli e migliorare l'accuratezza
-num_test = [90, 50, 60]
+num_test = [70, 30, 50]
 
 def main():
     for j in range(len(data_sets)) :
-        dataset, attributes, target = importa_dataset_csv(data_sets[j], target_positions[j])
+        dataset, attributes, target = import_dataset_csv(data_sets[j], target_positions[j])
         '''
         print "-------inizio dataset-----"
         print dataset
