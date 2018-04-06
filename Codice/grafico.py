@@ -9,7 +9,7 @@ def create_plot(name, percentages, accuracy_train, accuracy_validation, pruning)
         plt.title("Curve di apprendimento " + str(name) + " CON pruning")
     plt.xlabel("Percentuali apprendimento dataset")
     plt.ylabel("Accuratezza su test set")
-    plt.legend(['Accuratezza training', 'Accuratezza validation set'])
+    plt.legend(['Accuratezza training set', 'Accuratezza test set'])
     plt.show()
 
 def plot_comparation(name, percentages, accuracy, accuracy_pruning):
