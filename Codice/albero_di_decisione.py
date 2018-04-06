@@ -1,5 +1,6 @@
 import math
 
+#La funzione crea l'albero di decisione utilizzando l'algoritmo id3
 def create_decision_tree(dataset, attributes, target, parent_dataset, depth):
     values = [i[target] for i in dataset]
     # Se il dataset e' vuoto o non ci sono attributi oltre a quello target si ritorna il valore di target
@@ -32,15 +33,13 @@ def create_decision_tree(dataset, attributes, target, parent_dataset, depth):
     return tree
 
 
-
+# La funzione ritorna il valore ripetuto piu' volte di target
 def plurality_value(dataset, target):
-    # La funzione ritorna il valore ripetuto piu' volte di target
     values = [i[target] for i in dataset]
     max_freq = 0
     freq_value = None
-    # Il seguente ciclo permette di avere una lista di valori non ripetuti
     tmp = []
-    for i in dataset:
+    for i in dataset: # Il ciclo permette di avere una lista di valori non ripetuti
         if tmp.count(i[target]) != 1:
             tmp.append(i[target])
     for i in tmp:
@@ -49,14 +48,14 @@ def plurality_value(dataset, target):
             freq_value = i
     return freq_value
 
+# La funzione determina dato un target, un insieme di attributi e un dataset
+# qual'e' l'attributo con information gain maggiore in base all'entropia
 def importance(dataset, attributes, target):
-    # La funzione determina dato un attributo target, un insieme di attributi e un dataset
-    # qual'e' l'attributo con information gain maggiore in base all'entropia
     # Il gain viene inizializzato a -1 perche' in alcuni casi di
     # classificazione tutti gli attributi hanno gain pari a 0
     best_gain = -1.0
     best_attribute = None
-    # Per ogni attributo chiamo il metodo di calcolo del gain in base all'impurita'
+    # Per ogni attributo chiamo il metodo di calcolo del gain che utilizza l'entropia
     for i in attributes:
         '''
         #DEBUG
@@ -79,8 +78,8 @@ def get_sub_dataset(data, attribute, value):
     # Viene ritornao il sub_dataset usato per la creazione di un sotto albero
     return sub_dataset
 
+# La funzione permette il calcolo dell'information gain di un attributo
 def gain(dataset, attributes, target):
-    # La funzione permette il calcolo dell'information gain di un attributo
     frequency_list = get_frequency_list(dataset, attributes)
     # Il seguente ciclo permette il calcolo del secondo termine della formula dell'information gain
     second_term = 0.0
@@ -90,16 +89,16 @@ def gain(dataset, attributes, target):
     # Viene ritornato il costo dell'intero dataSet rispetto al target - il termine calcolato precedentemente
     return entropy(dataset, target) - second_term
 
+# La funzione calcola l' entropia di un attributo rispetto al dataSet
 def entropy(dataset, target):
-    # La funzione calcola l' entropia di un attributo rispetto al dataSet
     frequency_list = get_frequency_list(dataset, target)
     entropy = 0.0
     for i in frequency_list.values():
         entropy = entropy + (-i / len(dataset)) * math.log(i / len(dataset), 2)
     return entropy
 
+# La funzione crea un dizionario dove ad ogni possibile valore di attributo viene associata la sua frequenza
 def get_frequency_list(data, attributes):
-    # La funzione crea un dizionario dove ad ogni possibile valore di attributo viene associata la sua frequenza
     frequency_list = {}
     for i in data:
         if (frequency_list.has_key(i[attributes])):
@@ -108,8 +107,8 @@ def get_frequency_list(data, attributes):
             frequency_list[i[attributes]] = 1.0
     return frequency_list
 
+#LA FUNZIONE SCORRE L'ALBERO RICORSIVAMENTE E LO STAMPA
 def print_tree(tree, str):
-    #LA FUNZIONE SCORRE L'ALBERO RICORSIVAMENTE E LO STAMPA
     if type(tree) == dict:
         print "%s%s" % (str, tree.keys()[0])
         for item in tree.values()[0].keys():

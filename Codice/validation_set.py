@@ -2,10 +2,10 @@ from albero_di_decisione import *
 import fpformat
 from random import shuffle
 
+# La funzione divide il dataset in trainset e test set a seconda della percentuale
+# passata per parametro la profondita per il pruning viene calcolta dal validation set che e' un sottoinseme del trainset
+# mentre il numero di test serve per fare test multipli e calcolare una media di valori
 def test(dataset, attributes, target, percentage, num_test, pruning):
-    # La funzione divide il dataset in trainset e test set a seconda della percentuale
-    # passata per parametro la profondita per il pruning viene calcolta dal validation set che e' un sottoinseme del trainset
-    # mentre il numero di test serve per fare test multipli e calcolare una media di valori
     num_examples = (int) (len(dataset) * percentage)
     # Si inizializzano le variabili
     accuracy_train_tot = 0.0
@@ -83,7 +83,7 @@ def test(dataset, attributes, target, percentage, num_test, pruning):
         # ritorna l'accuratezza SUL TRAIN(TRAIN+VALIDATION) E SUL TEST
     return [fpformat.fix(accuracy_train_tot / num_test, 8), fpformat.fix(accuracy_test_tot / num_test, 8)]
 
-
+#Questa funzione mi serve per eseguire il confronto sulle predizioni dell' accuratezza dell'albero
 def get_target_value(tree, row):
     # La funzione controlla se il tipo dell'albero e' una stringa. Se cosi' non e' vuol dire che non siamo arrivati
     # ad una foglia e che bisogna continuare la visita dell'albero.
